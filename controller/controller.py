@@ -17,6 +17,12 @@ def delete_member(member):
     member.delete_instance()
 
 
+def update_member(member, name, personalnr):
+    member.name = name
+    member.personalnumber = personalnr
+    member.save()
+
+
 def add_boat(owner, type, boat_length):
     boat = Boat.create(owner=owner, type=type, boat_length=boat_length)
     return boat
@@ -24,6 +30,13 @@ def add_boat(owner, type, boat_length):
 
 def delete_boat(boat):
     boat.delete_instance()
+
+
+def update_boat(boat, owner, type, boat_length):
+    boat.owner = owner
+    boat.type = type
+    boat.boat_length = boat_length
+    boat.save()
 
 
 def get_member_list():
