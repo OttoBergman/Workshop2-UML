@@ -1,31 +1,12 @@
 __author__ = 'otto'
+from peewee import *
+
+db = SqliteDatabase('yacht_club.db')
 
 
-class Member:
+class Member(Model):
+    name = CharField()
+    personalnumber = CharField()
 
-    name = ''
-    personalnumber = ''
-    id = None
-
-    def __init__(self, name, personalnumber, id):
-        self.name = name
-        self.personalnumber = personalnumber
-        self.id = id
-
-    def get_name(self):
-        return self.name
-
-    def set_name(self, name):
-        self.name = name
-
-    def get_personalnumber(self):
-        return self.personalnumber
-
-    def set_personalnumber(self, personalnumber):
-        self.personalnumber = personalnumber
-
-    def get_id(self):
-        return self.id
-
-    def set_id(self, id):
-        self.id = id
+    class Meta:
+        database = db  # This model uses the "yacht_club.db" database.

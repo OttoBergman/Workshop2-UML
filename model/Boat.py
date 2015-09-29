@@ -1,28 +1,16 @@
 __author__ = 'Viktor'
+from peewee import *
+from model.Member import Member
 
-class Boat:
+db = SqliteDatabase('yacht_club.db')
 
-    type = ''
-    length = 0.0
+class Boat(Model):
+    owner = ForeignKeyField(Member, related_name='boats')
+    type = CharField()
+    boat_length = FloatField()
 
-    def __init__(self, sailboat, motorsailer, kayak, canoe, other):
-        self.sailboat = sailboat
-        self.motorsailer = motorsailer
-        self.kayak = kayak
-        self.canoe = canoe
-        self.other = other
-
-    def get_type(self):
-        return self.type
-
-    def set_type(self, type):
-        self.type = type
-
-    def get_length(self):
-        return self.length
-
-    def set_length(self, length):
-        self.length = length
+    class Meta:
+        database = db  # This model uses the "yacht_club.db" database.
 
 
 
