@@ -2,6 +2,10 @@ __author__ = 'Viktor'
 
 import os
 import time
+from controller.controller import *
+from peewee import *
+
+db = SqliteDatabase('yachat_club.db')
 
 
 def main_text():
@@ -14,7 +18,7 @@ def main_text():
         create()
 
     elif text == '2':
-        lists()
+        member_boat_information()
 
     elif text == 'q':
         exit_console()
@@ -25,11 +29,33 @@ def create():
         clear()
         print('Press 1 to add Member \n'
               'Press 2 to add Boat \n'
-              'Press 3 to change Member/Boat information \n'
-              'Press 4 to delete Members \n'
-              'Press 5 to delete boat \n'
-              'Press 6 to go back')
+              'Press 3 to change Member information \n'
+              'Press 4 to change Boat information \n'
+              'Press 5 to delete Members \n'
+              'Press 6 to delete Boat \n'
+              'Press 7 to go back')
         text = raw_input()
+
+        if text == '1':
+            create_member()
+
+        elif text == '2':
+            create_boat()
+
+        elif text == '3':
+            change_member()
+
+        elif text == '4':
+            change_boat()
+
+        elif text == '5':
+            remove_member()
+
+        elif text == '6':
+            remove_boat()
+
+        elif text == '7':
+            main_text()
 
 
 def lists():
@@ -41,29 +67,69 @@ def lists():
         text = raw_input()
 
 
-def add_member():
+def create_member():
     while True:
         clear()
-        name = raw_input('Enter members name:')
-        personalnumber = raw_input('Enter members personalnumber')
-        id = raw_input('Enter members id')
-        text = raw_input()
+        name = raw_input('Enter mebers name: ')
+        socialnumber = raw_input('Enter members socialnumber: ')
+        add_member(name, socialnumber)
+        create()
 
 
-def add_boat():
+def create_boat():
     clear()
+    owner = raw_input('Enter owners name: ')
+    type = raw_input('Enter type of boat: ')
+    length = raw_input('Enter length of boat: ')
+    add_boat(owner, type, length)
+    create()
 
 
 def member_boat_information():
     clear()
+    print('Press 1 to view member list: \n'
+          'Press 2 to view boat list: \n')
+    text = raw_input()
+
+    if text == '1':
+        member_list()
+
+    elif text == '2':
+        boat_list()
 
 
-def delete_member():
+def member_list():
+    clear()
+    for i in get_member_list():
+        print i
+
+
+def boat_list():
     clear()
 
 
-def delete_boat():
+def remove_member():
     clear()
+
+
+def remove_boat():
+    clear()
+
+
+def change_member():
+    clear()
+    name = raw_input('Enter new name: ')
+    socialnumber = raw_input('Enter new socialnumber: ')
+    create()
+
+
+def change_boat():
+    clear()
+    owner = raw_input('Enter new owner: ')
+    type = raw_input('Enter new type_ ')
+    length = raw_input('Enter new length')
+    update_boat(owner, type, length)
+    create()
 
 
 def exit_console():
