@@ -7,7 +7,6 @@ from peewee import *
 
 db = SqliteDatabase('yachat_club.db')
 
-
 def main_text():
     print('Press 1 for Member/Boat configuration \n'
           'Press 2 for List viewer \n'
@@ -100,8 +99,8 @@ def member_boat_information():
 
 def member_list():
     clear()
-    for i in get_member_list():
-        print i
+    for member in get_member_list():
+        print str(member.id) + ' ' + member.name + ' ' + member.personalnumber
 
 
 def boat_list():

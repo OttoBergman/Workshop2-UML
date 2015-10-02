@@ -50,4 +50,3 @@ def get_boat_list():
     for boat in Boat.select().join(Member):
         boats.append(boat)
     return boats
-
