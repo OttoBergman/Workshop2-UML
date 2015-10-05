@@ -51,5 +51,15 @@ def get_boat_list():
         boats.append(boat)
     return boats
 
+def get_boats_for_member(member):
+    boats = []
+    for boat in Boat.select().where(Boat.owner == member):
+        boats.append(boat)
+    return boats
+
+def get_boat_types():
+    types = ['Sailboat', 'Motorsailer', 'Kayak/Canoe', 'Other']
+    return types
+
 def close_database():
     db.close()

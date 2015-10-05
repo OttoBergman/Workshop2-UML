@@ -2,10 +2,12 @@ __author__ = 'Viktor'
 
 import os
 import time
+import sys
+sys.path.append('/home/otto/PycharmProjects/Workshop2-UML')
 from controller.controller import *
 from peewee import *
 
-db = SqliteDatabase('yachat_club.db')
+db = SqliteDatabase('yacht_club.db')
 
 def main_text():
     print('Press 1 for Member/Boat configuration \n'
@@ -17,10 +19,15 @@ def main_text():
         create()
 
     elif text == '2':
+        clear()
         member_boat_information()
 
     elif text == 'q':
         exit_console()
+
+    else:
+        clear()
+        main_text()
 
 
 def create():
@@ -39,31 +46,52 @@ def create():
             create_member()
 
         elif text == '2':
+            clear()
             create_boat()
 
         elif text == '3':
+            clear()
             change_member()
 
         elif text == '4':
+            clear()
             change_boat()
 
         elif text == '5':
+            clear()
             remove_member()
 
         elif text == '6':
+            clear()
             remove_boat()
 
         elif text == '7':
+            clear()
             main_text()
 
+        else:
+            clear()
+            create()
 
-def lists():
+
+def member_lists():
     while True:
-        clear()
         print('Press 1 for Compact list \n'
               'Press 2 for Verbose list \n'
               'Press 3 to go back')
         text = raw_input()
+        if text == '1':
+            clear()
+            compact_member_list()
+        elif text == '2':
+            clear()
+            verbose_member_list()
+        elif text == '3':
+            clear()
+            member_boat_information()
+        else:
+            clear()
+            member_lists()
 
 
 def create_member():
@@ -77,83 +105,180 @@ def create_member():
 
 def create_boat():
     clear()
-
-    for member in get_member_list():
+    members = get_member_list()
+    for member in members:
         print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
 
-    input = raw_input('Enter members id')
-    owner = member.select().where(member.id == input)
-    type = raw_input('Enter type of boat: ')
-    length = raw_input('Enter length of boat: ')
-    add_boat(owner, type, length)
-    create()
+    member_id = raw_input('Press the number adjacent to the member who should own the boat: ')
+    if 1 <= int(member_id) <= len(members):
+        owner = members[int(member_id) - 1]
+        boat_types = get_boat_types()
+        for boat_type in boat_types:
+            print str(boat_types.index(boat_type) + 1) + ' ' + boat_type
+        boat_type_input = raw_input('Enter the number of what type of boat: ')
+        if 1 <= int(boat_type_input) <= len(boat_types):
+            length = raw_input('Enter length of boat: ')
+            add_boat(owner, boat_types[int(boat_type_input)], length)
+            create()
+        else:
+            clear()
+            print 'Not a valid type index'
+            print
+            create_boat()
+    else:
+            clear()
+            print 'Not a valid member index'
+            print
+            create_boat()
 
 
 def member_boat_information():
-    clear()
     print('Press 1 to view member list: \n'
-          'Press 2 to view boat list: \n')
+          'Press 2 to view boat list: \n'
+          'Press 3 to go back')
     text = raw_input()
 
     if text == '1':
-        member_list()
-
+        clear()
+        member_lists()
     elif text == '2':
+        clear()
         boat_list()
+    elif text == '3':
+        clear()
+        main_text()
+    else:
+        clear()
+        member_boat_information()
 
-
-def member_list():
+def compact_member_list():
     clear()
     for member in get_member_list():
-        print str(member.id) + ' ' + member.name + ' ' + member.personalnumber
+        boats = get_boats_for_member(member)
+        print member.name + ' ' + str(member.id) + ' ' + str(len(boats))
+        print
+    member_lists()
 
+def verbose_member_list():
+    clear()
+    for member in get_member_list():
+        boats = get_boats_for_member(member)
+        print member.name + ' ' + member.personalnumber + ' ' + str(member.id)
+        if boats:
+            print 'Boats:'
+            for boat in boats:
+                print boat.type + ' ' + str(boat.boat_length)
+        print ''
+    member_lists()
 
 def boat_list():
     clear()
+    for boat in get_boat_list():
+        print 'Owner: ' + boat.owner.name + ' ' + boat.type + ' ' + str(boat.boat_length)
+        print
+    member_boat_information()
 
 
 def remove_member():
-    clear()
-
-    for member in get_member_list():
+    members = get_member_list()
+    for member in members:
         print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
 
-    input = raw_input('Press the id-number adjacent to the member whom you want to delete: ')
-    member.delete_instance(member.select().where(member.id == input))
+    id_nr = raw_input('Press the number adjacent to the member whom you want to delete: ')
+    if 0 <= int(id_nr) <= len(members):
+        members[int(id_nr) - 1].delete_instance()
+    else:
+        clear()
+        print 'Not a valid number!'
+        print
+        remove_member()
 
 def remove_boat():
-    clear()
+    members = get_member_list()
+    for member in members:
+        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+    member_input = raw_input('Press the number adjacent to the member whom\'s boat you want to remove: ')
+    if 0 <= int(member_input) <= len(members):
+        boats = get_boats_for_member(members[int(member_input) - 1])
+        for boat in boats:
+            print str(boats.index(boat) + 1) + ' ' + boat.type + ' ' + str(boat.boat_length)
+        boat_input = raw_input('Press the number adjacent to the boat you want to delete: ')
+        if 0 <= int(boat_input) - 1 <= len(boats):
+            boats[int(boat_input) - 1].delete_instance()
+        else:
+            clear()
+            print 'Not a valid boat index'
+            print
+            remove_boat()
+    else:
+        clear()
+        print 'Not a valid member index'
+        print
+        remove_boat()
 
 
 def change_member():
-    clear()
-
-    for member in get_member_list():
+    members = get_member_list()
+    for member in members:
         print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
 
-    input = raw_input('Press the id-number adjacent to the member whom you want to change: ')
-    name = raw_input('Enter new name: ')
-    socialnumber = raw_input('Enter new socialnumber: ')
+    id_nr = raw_input('Press the id-number adjacent to the member whom you want to change: ')
+    if 1 <= int(id_nr) <= len(members):
+        name = raw_input('Enter new name: ')
+        socialnumber = raw_input('Enter new socialnumber: ')
 
-    update_member(member.get('1'),name,socialnumber)
-    create()
+        update_member(members[(int(id_nr) - 1)], name, socialnumber)
+        create()
+    else:
+        clear()
+        print 'Not a valid member id'
+        print
+        change_member()
 
 
 def change_boat():
-    clear()
-    owner = raw_input('Enter new owner: ')
-    type = raw_input('Enter new type_ ')
-    length = raw_input('Enter new length')
-    update_boat(owner, type, length)
-    create()
+    boats = get_boat_list()
+    for boat in boats:
+        print str(boats.index(boat) + 1) + ' ' + boat.owner.name + ' ' + boat.type + ' ' + str(boat.boat_length)
+    boat_input = raw_input('Press the number adjacent to the boat you want to change: ')
+    if 1 <= int(boat_input) <= len(boats):
+        clear()
+        members = get_member_list()
+        for member in members:
+            print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+        owner = raw_input('Press the number adjacent to the member who should own the boat: ')
+        if 1 <= int(owner) <= len(members):
+            boat_types = get_boat_types()
+            for boat_type in boat_types:
+                print str(boat_types.index(boat_type)) + ' ' + boat_type
+            boat_type = raw_input('Press the number adjacent to the type of boat: ')
+            if 1 <= int(boat_type) <= len(boat_types):
+                length = raw_input('Enter new length: ')
+                update_boat(boats[int(boat_input) - 1], owner, boat_type, length)
+                create()
+            else:
+                clear()
+                print 'Not a valid type index'
+                print
+                change_boat()
+        else:
+            clear()
+            print 'Not a valid member index'
+            print
+            change_boat()
+    else:
+        clear()
+        print 'Not a valid boat index'
+        print
+        change_boat()
 
 
 def exit_console():
     clear()
 
-    text = raw_input()
     print('Goodbye!')
     time.sleep(2)
+    close_database()
     exit(0)
 
 
@@ -163,5 +288,5 @@ if __name__ == '__main__':
         os.system('cls' if os.name == 'nt' else 'clear')
 
 
-    while (True):
+    while True:
         main_text()
