@@ -77,7 +77,12 @@ def create_member():
 
 def create_boat():
     clear()
-    owner = raw_input('Enter owners name: ')
+
+    for member in get_member_list():
+        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+
+    input = raw_input('Enter members id')
+    owner = member.select().where(member.id == input)
     type = raw_input('Enter type of boat: ')
     length = raw_input('Enter length of boat: ')
     add_boat(owner, type, length)
@@ -110,6 +115,11 @@ def boat_list():
 def remove_member():
     clear()
 
+    for member in get_member_list():
+        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+
+    input = raw_input('Press the id-number adjacent to the member whom you want to delete: ')
+    member.delete_instance(member.select().where(member.id == input))
 
 def remove_boat():
     clear()
@@ -117,8 +127,15 @@ def remove_boat():
 
 def change_member():
     clear()
+
+    for member in get_member_list():
+        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+
+    input = raw_input('Press the id-number adjacent to the member whom you want to change: ')
     name = raw_input('Enter new name: ')
     socialnumber = raw_input('Enter new socialnumber: ')
+
+    update_member(member.get('1'),name,socialnumber)
     create()
 
 
