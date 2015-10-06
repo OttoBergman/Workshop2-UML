@@ -41,13 +41,13 @@ def update_boat(boat, owner, type, boat_length):
 
 def get_member_list():
     members = []
-    for member in Member.select().order_by(Member.name):
+    for member in Member.select().order_by(Member.id):
         members.append(member)
     return members
 
 def get_boat_list():
     boats = []
-    for boat in Boat.select().join(Member):
+    for boat in Boat.select().order_by(Boat.id).join(Member):
         boats.append(boat)
     return boats
 

@@ -6,7 +6,6 @@ import sys
 pathname = os.path.dirname(sys.argv[0])
 parent_dir_name = os.path.abspath(os.path.join(pathname, os.pardir))
 sys.path.append(parent_dir_name)
-print parent_dir_name
 from controller.controller import *
 from peewee import *
 
@@ -116,23 +115,36 @@ def create_boat():
     if 1 <= int(member_id) <= len(members):
         owner = members[int(member_id) - 1]
         boat_types = get_boat_types()
+        length = None
         for boat_type in boat_types:
             print str(boat_types.index(boat_type) + 1) + ' ' + boat_type
         boat_type_input = raw_input('Enter the number of what type of boat: ')
         if 1 <= int(boat_type_input) <= len(boat_types):
-            length = raw_input('Enter length of boat: ')
-            add_boat(owner, boat_types[int(boat_type_input)], length)
+            while True:
+                length = raw_input('Enter length of boat: ')
+                try:
+                    length = float(length)
+                    if length == 0:
+                        clear()
+                        print 'Not a correct length'
+                        continue
+                    break
+                except ValueError:
+                    clear()
+                    print 'Not a correct length'
+            add_boat(owner, boat_types[int(boat_type_input) - 1], length)
             create()
+
         else:
             clear()
             print 'Not a valid type index'
             print
             create_boat()
     else:
-            clear()
-            print 'Not a valid member index'
-            print
-            create_boat()
+        clear()
+        print 'Not a valid member index'
+        print
+        create_boat()
 
 
 def member_boat_information():

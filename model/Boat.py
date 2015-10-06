@@ -8,6 +8,7 @@ class Boat(Model):
     owner = ForeignKeyField(Member, related_name='boats')
     type = CharField()
     boat_length = FloatField()
+    id = IntegerField(primary_key=True)
 
     class Meta:
         database = db  # This model uses the "yacht_club.db" database.
