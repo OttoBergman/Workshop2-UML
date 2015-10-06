@@ -3,7 +3,10 @@ __author__ = 'Viktor'
 import os
 import time
 import sys
-sys.path.append('/home/otto/PycharmProjects/Workshop2-UML')
+pathname = os.path.dirname(sys.argv[0])
+parent_dir_name = os.path.abspath(os.path.join(pathname, '..'))
+sys.path.append(parent_dir_name)
+print parent_dir_name
 from controller.controller import *
 from peewee import *
 
