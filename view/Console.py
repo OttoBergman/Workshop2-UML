@@ -253,6 +253,7 @@ def change_member():
 
 def change_boat():
     boats = get_boat_list()
+    length = None
     for boat in boats:
         print str(boats.index(boat) + 1) + ' ' + boat.owner.name + ' ' + boat.type + ' ' + str(boat.boat_length)
     boat_input = raw_input('Press the number adjacent to the boat you want to change: ')
@@ -268,7 +269,18 @@ def change_boat():
                 print str(boat_types.index(boat_type)) + ' ' + boat_type
             boat_type = raw_input('Press the number adjacent to the type of boat: ')
             if 1 <= int(boat_type) <= len(boat_types):
-                length = raw_input('Enter new length: ')
+                while True:
+                    length = raw_input('Enter length of boat: ')
+                    try:
+                        length = float(length)
+                        if length == 0:
+                            clear()
+                            print 'Not a correct length'
+                            continue
+                        break
+                    except ValueError:
+                        clear()
+                        print 'Not a correct length'
                 update_boat(boats[int(boat_input) - 1], owner, boat_type, length)
                 create()
             else:
