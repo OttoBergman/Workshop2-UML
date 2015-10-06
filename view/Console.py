@@ -4,7 +4,7 @@ import os
 import time
 import sys
 pathname = os.path.dirname(sys.argv[0])
-parent_dir_name = os.path.abspath(os.path.join(pathname, '..'))
+parent_dir_name = os.path.abspath(os.path.join(pathname, os.pardir))
 sys.path.append(parent_dir_name)
 print parent_dir_name
 from controller.controller import *
