@@ -108,12 +108,12 @@ def create_member():
 def create_boat():
     clear()
     members = get_member_list()
-    for member in members:
-        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+    for count, member in enumerate(members):
+        print member.name + ' ' + member.personalnumber + ' [' + str(count) + ']'
 
-    member_id = raw_input('Press the number adjacent to the member who should own the boat: ')
-    if 1 <= int(member_id) <= len(members):
-        owner = members[int(member_id) - 1]
+    member_nr = raw_input('Press the number adjacent to the member who should own the boat: ')
+    if 0 <= int(member_nr) < len(members):
+        owner = members[int(member_nr)]
         boat_types = get_boat_types()
         length = None
         for boat_type in boat_types:
@@ -150,7 +150,8 @@ def create_boat():
 def member_boat_information():
     print('Press 1 to view member list: \n'
           'Press 2 to view boat list: \n'
-          'Press 3 to go back')
+          'Press 3 to view a specific members information: \n'
+          'Press 4 to go back')
     text = raw_input()
 
     if text == '1':
@@ -159,9 +160,12 @@ def member_boat_information():
     elif text == '2':
         clear()
         boat_list()
-    elif text == '3':
+    elif text == '4':
         clear()
         main_text()
+    elif text == '3':
+        clear()
+        specific_member_information()
     else:
         clear()
         member_boat_information()
@@ -196,12 +200,12 @@ def boat_list():
 
 def remove_member():
     members = get_member_list()
-    for member in members:
-        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+    for count, member in enumerate(members):
+        print member.name + ' ' + member.personalnumber + ' [' + str(count) + ']'
 
-    id_nr = raw_input('Press the number adjacent to the member whom you want to delete: ')
-    if 0 <= int(id_nr) <= len(members):
-        members[int(id_nr) - 1].delete_instance()
+    nr = raw_input('Press the number adjacent to the member whom you want to delete: ')
+    if 0 <= int(nr) < len(members):
+        delete_member(members[int(nr)])
     else:
         clear()
         print 'Not a valid number!'
@@ -210,16 +214,16 @@ def remove_member():
 
 def remove_boat():
     members = get_member_list()
-    for member in members:
-        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+    for count, member in enumerate(members):
+        print member.name + ' ' + member.personalnumber + ' [' + str(count) + ']'
     member_input = raw_input('Press the number adjacent to the member whom\'s boat you want to remove: ')
-    if 0 <= int(member_input) <= len(members):
-        boats = get_boats_for_member(members[int(member_input) - 1])
+    if 0 <= int(member_input) < len(members):
+        boats = get_boats_for_member(members[int(member_input)])
         for boat in boats:
-            print str(boats.index(boat) + 1) + ' ' + boat.type + ' ' + str(boat.boat_length)
+            print str(boats.index(boat)) + ' ' + boat.type + ' ' + str(boat.boat_length)
         boat_input = raw_input('Press the number adjacent to the boat you want to delete: ')
-        if 0 <= int(boat_input) - 1 <= len(boats):
-            boats[int(boat_input) - 1].delete_instance()
+        if 0 <= int(boat_input) < len(boats):
+            delete_boat(boats[int(boat_input)])
         else:
             clear()
             print 'Not a valid boat index'
@@ -234,19 +238,19 @@ def remove_boat():
 
 def change_member():
     members = get_member_list()
-    for member in members:
-        print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+    for count, member in enumerate(members):
+        print member.name + ' ' + member.personalnumber + ' [' + str(count) + ']'
 
-    id_nr = raw_input('Press the id-number adjacent to the member whom you want to change: ')
-    if 1 <= int(id_nr) <= len(members):
+    nr = raw_input('Press the id-number adjacent to the member whom you want to change: ')
+    if 0 <= int(nr) < len(members):
         name = raw_input('Enter new name: ')
         socialnumber = raw_input('Enter new socialnumber: ')
 
-        update_member(members[(int(id_nr) - 1)], name, socialnumber)
+        update_member(members[(int(nr))], name, socialnumber)
         create()
     else:
         clear()
-        print 'Not a valid member id'
+        print 'Not a valid number'
         print
         change_member()
 
@@ -255,20 +259,20 @@ def change_boat():
     boats = get_boat_list()
     length = None
     for boat in boats:
-        print str(boats.index(boat) + 1) + ' ' + boat.owner.name + ' ' + boat.type + ' ' + str(boat.boat_length)
+        print str(boats.index(boat)) + ' ' + boat.owner.name + ' ' + boat.type + ' ' + str(boat.boat_length)
     boat_input = raw_input('Press the number adjacent to the boat you want to change: ')
-    if 1 <= int(boat_input) <= len(boats):
+    if 0 <= int(boat_input) < len(boats):
         clear()
         members = get_member_list()
-        for member in members:
-            print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+        for count, member in enumerate(members):
+            print member.name + ' ' + member.personalnumber + ' [' + str(count) + ']'
         owner = raw_input('Press the number adjacent to the member who should own the boat: ')
-        if 1 <= int(owner) <= len(members):
+        if 0 <= int(owner) < len(members):
             boat_types = get_boat_types()
             for boat_type in boat_types:
                 print str(boat_types.index(boat_type)) + ' ' + boat_type
             boat_type = raw_input('Press the number adjacent to the type of boat: ')
-            if 1 <= int(boat_type) <= len(boat_types):
+            if 0 <= int(boat_type) < len(boat_types):
                 while True:
                     length = raw_input('Enter length of boat: ')
                     try:
@@ -281,7 +285,7 @@ def change_boat():
                     except ValueError:
                         clear()
                         print 'Not a correct length'
-                update_boat(boats[int(boat_input) - 1], owner, boat_type, length)
+                update_boat(boats[int(boat_input)], members[int(owner)], boat_types[int(boat_type)], length)
                 create()
             else:
                 clear()
@@ -299,6 +303,21 @@ def change_boat():
         print
         change_boat()
 
+
+def specific_member_information():
+    name = raw_input('Enter members name: ')
+    members = get_member_info(name)
+    if len(members) > 0:
+        clear()
+        for member in members:
+            print member.name + ' ' + member.personalnumber + ' [' + str(member.id) + ']'
+            print
+        member_boat_information()
+    else:
+        clear()
+        print 'No member with that name was found.'
+        print
+        member_boat_information()
 
 def exit_console():
     clear()

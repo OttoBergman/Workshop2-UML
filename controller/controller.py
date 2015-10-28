@@ -22,6 +22,12 @@ def update_member(member, name, personalnr):
     member.personalnumber = personalnr
     member.save()
 
+def get_member_info(name):
+    members = []
+    persons = Member.select().where(Member.name == name)
+    for member in persons:
+        members.append(member)
+    return members
 
 def add_boat(owner, type, boat_length):
     boat = Boat.create(owner=owner, type=type, boat_length=boat_length)
@@ -41,13 +47,13 @@ def update_boat(boat, owner, type, boat_length):
 
 def get_member_list():
     members = []
-    for member in Member.select().order_by(Member.id):
+    for member in Member.select():
         members.append(member)
     return members
 
 def get_boat_list():
     boats = []
-    for boat in Boat.select().order_by(Boat.id).join(Member):
+    for boat in Boat.select().join(Member):
         boats.append(boat)
     return boats
 
